@@ -22,4 +22,8 @@ public class Tasks {
 
     @Column(name = "status", nullable = false) 
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "idUser")
+    private User user;
 }
