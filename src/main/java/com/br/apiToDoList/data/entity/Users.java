@@ -1,7 +1,6 @@
 package com.br.apiToDoList.data.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,8 +9,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name="user")
-public class User {
+@Table(name="users")
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUser;
@@ -25,7 +24,5 @@ public class User {
     @Column(name="password", nullable = false, length = 100)
     private String password;
     
-
-
 
 }
