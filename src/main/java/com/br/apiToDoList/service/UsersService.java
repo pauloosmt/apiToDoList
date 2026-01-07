@@ -3,7 +3,6 @@ package com.br.apiToDoList.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
