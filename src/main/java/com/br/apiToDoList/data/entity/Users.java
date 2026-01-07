@@ -1,6 +1,9 @@
 package com.br.apiToDoList.data.entity;
 
+import com.br.apiToDoList.data.dto.request.UsersRequestDTO;
+
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,4 +28,10 @@ public class Users {
     private String password;
     
 
+    @Builder
+    public Users(UsersRequestDTO usersRequestDTO, String password) {
+        this.name = usersRequestDTO.name();
+        this.email = usersRequestDTO.email();
+        this.password = password;
+    }
 }
