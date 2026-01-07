@@ -1,6 +1,6 @@
 package com.br.apiToDoList.data.dto.request;
 
-import com.br.apiToDoList.data.entity.Users;
+
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
