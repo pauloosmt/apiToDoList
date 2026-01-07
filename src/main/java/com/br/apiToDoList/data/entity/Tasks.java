@@ -1,12 +1,17 @@
 package com.br.apiToDoList.data.entity;
 
+import com.br.apiToDoList.data.dto.request.TaskRequestDTO;
+
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "tasks")
 public class Tasks {
 
@@ -26,4 +31,13 @@ public class Tasks {
     @ManyToOne
     @JoinColumn(name = "idUser")
     private Users user;
+
+
+    @Builder
+    public Tasks(TaskRequestDTO taskRequestDTO, Users users) {
+        this.name = taskRequestDTO.name();
+        this.description = taskRequestDTO.description();
+        this.status = taskRequestDTO.status();
+        this.user = users;
+    }
 }
