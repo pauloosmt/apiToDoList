@@ -1,5 +1,7 @@
 package com.br.apiToDoList.data.dto.response;
 
+import com.br.apiToDoList.data.entity.Users;
+
 public record UsersResponseDTO(
 
     Long id,
@@ -7,5 +9,7 @@ public record UsersResponseDTO(
     String email,
     String password
 ) {
-
+    public UsersResponseDTO(Users users) {
+        this(users.getIdUser(), users.getName(), users.getEmail(), users.getPassword());
+    }
 }
