@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.br.apiToDoList.data.dto.request.UsersRequestDTO;
+import com.br.apiToDoList.data.dto.request.UserRequestDTO;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -18,7 +18,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @Table(name="users")
-public class Users implements UserDetails{
+public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUser;
@@ -36,50 +36,48 @@ public class Users implements UserDetails{
     
 
     @Builder
-    public Users(UsersRequestDTO usersRequestDTO, String password) {
-        this.name = usersRequestDTO.name();
-        this.email = usersRequestDTO.email();
+    public User(UserRequestDTO userRequestDTO, String password) {
+        this.name = userRequestDTO.name();
+        this.email = userRequestDTO.email();
         this.password = password;
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+        return null;
     }
 
 
     @Override
     public String getUsername() {
-        throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
+        return email;
     }
 
 
     @Override
     public boolean isAccountNonExpired() {
-        
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
 
     @Override
     public boolean isAccountNonLocked() {
         
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
 
     @Override
     public boolean isCredentialsNonExpired() {
         
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
 
     @Override
     public boolean isEnabled() {
         
-        return UserDetails.super.isEnabled();
+        return true;
     }
 }

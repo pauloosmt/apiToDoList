@@ -30,14 +30,14 @@ public class Tasks {
 
     @ManyToOne
     @JoinColumn(name = "idUser")
-    private Users user;
+    private User user;
 
 
     @Builder
-    public Tasks(TaskRequestDTO taskRequestDTO, Users users) {
+    public Tasks(TaskRequestDTO taskRequestDTO, User user) {
         this.name = taskRequestDTO.name();
         this.description = taskRequestDTO.description();
         this.status = taskRequestDTO.status();
-        this.user = users;
+        this.user = user;
     }
 }
