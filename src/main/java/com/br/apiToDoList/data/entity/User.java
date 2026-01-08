@@ -1,8 +1,10 @@
 package com.br.apiToDoList.data.entity;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.br.apiToDoList.data.dto.request.UserRequestDTO;
@@ -32,7 +34,7 @@ public class User implements UserDetails{
     @Column(name="password", nullable = false, length = 100)
     private String password;
 
-    private String role;
+    private  UserRole role;
     
 
     @Builder
@@ -45,7 +47,13 @@ public class User implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if (this.role == UserRole.ADMIN) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        else {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        
     }
 
 
