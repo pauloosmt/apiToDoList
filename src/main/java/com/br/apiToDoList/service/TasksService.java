@@ -21,7 +21,6 @@ public class TasksService {
 
     }
 
-
     private Tasks findTaskById(Long idTask) {
         return tasksRepository.findById(idTask).orElseThrow(() -> new RuntimeException("Task not found"));
     }

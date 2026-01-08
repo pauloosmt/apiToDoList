@@ -7,9 +7,10 @@ public record UsersResponseDTO(
     Long id,
     String name,
     String email,
-    String password
+    String password,
+    String role
 ) {
     public UsersResponseDTO(Users users) {
-        this(users.getIdUser(), users.getName(), users.getEmail(), users.getPassword());
+        this(users.getIdUser(), users.getName(), users.getEmail(), users.getPassword(), users.getRole());
     }
 }
