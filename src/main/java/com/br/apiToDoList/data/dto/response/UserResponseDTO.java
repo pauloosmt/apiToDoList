@@ -1,6 +1,7 @@
 package com.br.apiToDoList.data.dto.response;
 
 import com.br.apiToDoList.data.entity.User;
+import com.br.apiToDoList.data.entity.UserRole;
 
 public record UserResponseDTO(
 
@@ -8,7 +9,7 @@ public record UserResponseDTO(
     String name,
     String email,
     String password,
-    String role
+    UserRole role
 ) {
     public UserResponseDTO(User user) {
         this(user.getIdUser(), user.getName(), user.getEmail(), user.getPassword(), user.getRole());
