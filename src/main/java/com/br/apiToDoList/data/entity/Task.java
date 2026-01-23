@@ -1,5 +1,7 @@
 package com.br.apiToDoList.data.entity;
 
+import java.time.LocalDate;
+
 import com.br.apiToDoList.data.dto.request.TaskRequestDTO;
 
 import jakarta.persistence.*;
@@ -33,6 +35,8 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "idUser")
     private User user;
+
+    private LocalDate dataTask;
 
 
     @Builder

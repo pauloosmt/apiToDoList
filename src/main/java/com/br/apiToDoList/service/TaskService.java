@@ -2,8 +2,10 @@ package com.br.apiToDoList.service;
 
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,8 @@ public class TaskService {
 
         Task task = new Task(taskRequestDTO, user);
 
+        task.setDataTask(LocalDate.now());
+
         taskRepository.save(task);
            
         return new TaskResponseDTO(task);
@@ -45,6 +49,23 @@ public class TaskService {
 
         return tasks.stream().map(TaskResponseDTO::new).collect(Collectors.toList());
         
+    }
+
+    public TaskResponseDTO updateTask(Long idTask, TaskRequestDTO taskRequestDTO) {
+        Task task = findTaskById(idTask);
+        if(taskRequestDTO.name() != null && !taskRequestDTO.name().isBlank()) {
+            task.setName(taskRequestDTO.name());
+        } 
+        if(taskRequestDTO.status() != null && !taskRequestDTO.status().isBlank()) {
+            task.setStatus(taskRequestDTO.status());
+        }
+        if(taskRequestDTO.description() != null && !taskRequestDTO.description().isBlank()) {
+            task.setDescription(taskRequestDTO.description());
+        }
+
+        taskRepository.save(task);
+
+        return new TaskResponseDTO(task);
     }
 
 
