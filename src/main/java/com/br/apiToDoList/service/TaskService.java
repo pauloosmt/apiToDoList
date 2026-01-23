@@ -2,6 +2,9 @@ package com.br.apiToDoList.service;
 
 
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +27,6 @@ public class TaskService {
     public TaskResponseDTO getTaskByID(Long idTask) {
         Task task = findTaskById(idTask);
         return new TaskResponseDTO(task);
-
     }
 
     public TaskResponseDTO taskUserLogged(TaskRequestDTO taskRequestDTO, String email) {
@@ -37,6 +39,16 @@ public class TaskService {
         return new TaskResponseDTO(task);
         
     }
+
+    public List<TaskResponseDTO> allTasks(String email) {
+        List<Task> tasks = taskRepository.findByUserEmail(email);
+
+        return tasks.stream().map(TaskResponseDTO::new).collect(Collectors.toList());
+        
+    }
+
+
+
 
     private Task findTaskById(Long idTask) {
         return taskRepository.findById(idTask).orElseThrow(() -> new RuntimeException("Task not found"));
