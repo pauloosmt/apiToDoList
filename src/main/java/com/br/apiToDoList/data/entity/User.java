@@ -34,14 +34,16 @@ public class User implements UserDetails{
     @Column(name="password", nullable = false, length = 100)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private  UserRole role;
     
 
     @Builder
-    public User(UserRequestDTO userRequestDTO, String password) {
+    public User(UserRequestDTO userRequestDTO, String password, UserRole role) {
         this.name = userRequestDTO.name();
         this.email = userRequestDTO.email();
         this.password = password;
+        this.role = role;
     }
 
 

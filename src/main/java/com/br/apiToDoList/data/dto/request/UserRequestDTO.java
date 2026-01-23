@@ -1,5 +1,7 @@
 package com.br.apiToDoList.data.dto.request;
 
+import com.br.apiToDoList.data.entity.UserRole;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,7 +16,9 @@ public record UserRequestDTO(
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "The password must be at least 6 characters long")
-    String password
+    String password,
+
+    UserRole role
     
 ) {
  

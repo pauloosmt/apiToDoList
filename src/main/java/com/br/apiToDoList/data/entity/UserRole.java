@@ -2,8 +2,8 @@ package com.br.apiToDoList.data.entity;
 
 
 public enum UserRole {
-    ADMIN("admin"),
-    USER("user");
+    ADMIN("ADMIN"),
+    USER("USER");
 
 
     private String role;
