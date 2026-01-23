@@ -36,7 +36,7 @@ public class UserService {
         return new UserResponseDTO(user);
     }
 
-    public UserResponseDTO updateUsers(Long idUser, UserRequestDTO usersRequestDTO) {
+    public UserResponseDTO updateUser(Long idUser, UserRequestDTO usersRequestDTO) {
         User user = findUserById(idUser);
 
         if(usersRequestDTO.name()!= null && !usersRequestDTO.name().isBlank()) {
@@ -52,6 +52,8 @@ public class UserService {
         return new UserResponseDTO(user);
 
     }
+
+    
 
 
 

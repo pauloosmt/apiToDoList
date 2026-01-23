@@ -1,15 +1,15 @@
 package com.br.apiToDoList.data.dto.response;
 
-import com.br.apiToDoList.data.entity.Tasks;
+import com.br.apiToDoList.data.entity.Task;
 
-public record TasksResponseDTO(
+public record TaskResponseDTO(
     Long id,
     String name, 
     String description,
     String situation
 
 ) {
-    public TasksResponseDTO(Tasks tasks) {
+    public TaskResponseDTO(Task tasks) {
         this(tasks.getIdTask(), tasks.getName(), tasks.getDescription(), tasks.getStatus());
     }
 }
