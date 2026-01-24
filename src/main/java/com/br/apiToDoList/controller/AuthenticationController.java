@@ -17,6 +17,7 @@ import com.br.apiToDoList.data.dto.request.UserRequestDTO;
 import com.br.apiToDoList.data.dto.response.LoginResponseDTO;
 import com.br.apiToDoList.data.dto.response.UserResponseDTO;
 import com.br.apiToDoList.data.entity.User;
+import com.br.apiToDoList.data.entity.UserRole;
 import com.br.apiToDoList.infra.security.TokenService;
 import com.br.apiToDoList.repository.UserRepository;
 import com.br.apiToDoList.service.UserService;
@@ -26,6 +27,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("auth")
 public class AuthenticationController {
+ 
 
     @Autowired
     private TokenService tokenService;
@@ -56,6 +58,6 @@ public class AuthenticationController {
         }
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(data, encryptedPassword, data.role()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(data, encryptedPassword, UserRole.USER));
     }
 }
