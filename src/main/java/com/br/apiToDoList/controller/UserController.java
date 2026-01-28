@@ -1,9 +1,12 @@
 package com.br.apiToDoList.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,4 +40,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequestDTO, password, UserRole.USER));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResponseDTO>> allUsers() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsers());
+    }
+
+    @GetMapping("/{idUser}")
+    public ResponseEntity<UserResponseDTO> userByID(@PathVariable Long idUser) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(idUser));
+    }
 }
