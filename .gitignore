@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### Arquivo que contem dados pessoais ###
-src/main/resources/application.properties
+.properties
