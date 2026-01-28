@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.br.apiToDoList.data.dto.request.UserRequestDTO;
 import com.br.apiToDoList.data.dto.response.UserResponseDTO;
+import com.br.apiToDoList.data.entity.Task;
 import com.br.apiToDoList.data.entity.User;
 import com.br.apiToDoList.data.entity.UserRole;
+import com.br.apiToDoList.repository.TaskRepository;
 import com.br.apiToDoList.repository.UserRepository;
 
 @Service
@@ -18,6 +20,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     public List<UserResponseDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -31,6 +36,7 @@ public class UserService {
     }
 
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO, String password, UserRole userRole) {
+        
         User user = new User(userRequestDTO, password, userRole);
         userRepository.save(user);
 
@@ -60,6 +66,16 @@ public class UserService {
 
     }
 
+    public String deleteUser(Long idUser) {
+        User user = findUserById(idUser);
+        
+        List<Task> allUserTask = taskRepository.findByUserEmail(user.getEmail());
+
+        taskRepository.deleteAll(allUserTask);
+        userRepository.delete(user);
+
+        return "The user with email '"+ user.getEmail() + "' has been removed.";
+    }
     
 
 
