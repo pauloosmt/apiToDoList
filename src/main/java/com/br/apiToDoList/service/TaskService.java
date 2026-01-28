@@ -67,6 +67,12 @@ public class TaskService {
         return new TaskResponseDTO(task);
     }
 
+    public String deleteTask(Long idTask) {
+        Task task = findTaskById(idTask);
+        taskRepository.delete(task);
+
+        return "The task with the ID '"+ task.getIdTask() + "' was deleted!";
+    }
 
 
 

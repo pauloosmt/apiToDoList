@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +47,6 @@ public class TaskController {
     }
 
     @PutMapping(value = "/update/{idTask}")
-
     public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long idTask, @RequestBody TaskRequestDTO taskRequestDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(idTask, taskRequestDTO));
     }
@@ -54,6 +54,11 @@ public class TaskController {
     @GetMapping("/{idTask}")
     public ResponseEntity<TaskResponseDTO> idTask(@PathVariable Long idTask) {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.getTaskByID(idTask));
+    }
+
+    @DeleteMapping("/delete/{idTask}")
+    public ResponseEntity<String> deleteTask(@PathVariable Long idTask){
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.deleteTask(idTask));
     }
 
 }
