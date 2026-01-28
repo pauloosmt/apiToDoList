@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.br.apiToDoList.data.dto.request.UserRequestDTO;
@@ -44,7 +45,13 @@ public class UserService {
         }
 
         if(usersRequestDTO.email() != null && !usersRequestDTO.email().isBlank()) {
-            user.setEmail(usersRequestDTO.email());
+            if(usersRequestDTO.email().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))
+                user.setEmail(usersRequestDTO.email());
+        }
+
+        if(usersRequestDTO.password() != null && !usersRequestDTO.password().isBlank()) {
+            String encryptedSenha = new BCryptPasswordEncoder().encode(usersRequestDTO.password());
+            user.setPassword(encryptedSenha);
         }
 
         userRepository.save(user);
