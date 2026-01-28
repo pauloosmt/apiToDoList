@@ -51,4 +51,9 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(idTask, taskRequestDTO));
     }
 
+    @GetMapping("/{idTask}")
+    public ResponseEntity<TaskResponseDTO> idTask(@PathVariable Long idTask) {
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.getTaskByID(idTask));
+    }
+
 }

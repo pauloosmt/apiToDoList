@@ -41,7 +41,6 @@ public class TaskService {
         taskRepository.save(task);
            
         return new TaskResponseDTO(task);
-        
     }
 
     public List<TaskResponseDTO> allTasks(String email) {
