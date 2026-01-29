@@ -21,16 +21,32 @@ import com.br.apiToDoList.data.dto.request.TaskRequestDTO;
 import com.br.apiToDoList.data.dto.response.TaskResponseDTO;
 import com.br.apiToDoList.service.TaskService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("task")
+@Tag(name= "Tarefas", description = "Endpoints para gerenciamento de tarefas")
+
 public class TaskController {
 
     
-
     @Autowired
     private TaskService taskService;
 
     @PostMapping("/create")
+    @Operation(
+        summary = "Criar uma nova tarefa",
+        description = "Cria uma nova tarefa informando título, descrição e status."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Tarefa criada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    })
+
     public ResponseEntity<?> createTask(@RequestBody TaskRequestDTO taskRequestDTO) {
         
         String emailUser = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -40,6 +56,12 @@ public class TaskController {
     }
 
     @GetMapping("/all")
+    @Operation(
+        summary = "Listar todas as tarefas",
+        description = "Retorna uma lista com todas as tarefas cadastradas."
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de tarefas retornada com sucesso")
+    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
     public ResponseEntity<List<TaskResponseDTO>> getAllTasks(Authentication authentication) {
         String email = authentication.getName();
         
@@ -47,16 +69,46 @@ public class TaskController {
     }
 
     @PutMapping(value = "/update/{idTask}")
+    @Operation(
+        summary = "Atualizar uma tarefa",
+        description = "Atualiza os dados de uma tarefa existente."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Tarefa atualizada"),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
+        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    })
+
     public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long idTask, @RequestBody TaskRequestDTO taskRequestDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(idTask, taskRequestDTO));
     }
 
     @GetMapping("/{idTask}")
+    @Operation(
+        summary = "Buscar tarefa por ID",
+        description = "Retorna os dados de uma tarefa específica."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Tarefa encontrada"),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
+        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    })
+
     public ResponseEntity<TaskResponseDTO> idTask(@PathVariable Long idTask) {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.getTaskByID(idTask));
     }
 
     @DeleteMapping("/delete/{idTask}")
+    @Operation(
+        summary = "Excluir uma tarefa",
+        description = "Remove uma tarefa pelo ID."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Tarefa removida"),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
+        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    })
+
     public ResponseEntity<String> deleteTask(@PathVariable Long idTask){
         return ResponseEntity.status(HttpStatus.OK).body(taskService.deleteTask(idTask));
     }

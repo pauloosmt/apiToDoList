@@ -21,10 +21,18 @@ import com.br.apiToDoList.data.entity.UserRole;
 import com.br.apiToDoList.repository.UserRepository;
 import com.br.apiToDoList.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("user")
+@Tag(name = "Usuários", description = "Endpoints para gerenciamento de usuários")
+@Tag(name = "Usuários", description = "Endpoints para gerenciamento de usuários")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -33,6 +41,19 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/create")
+     @Operation(
+            summary = "Cadastrar usuário",
+            description = "Cria um novo usuário no sistema"
+    )
+    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    @ApiResponse(
+            responseCode = "201",
+            description = "Usuário criado com sucesso",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = UserResponseDTO.class)
+            )
+    )
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserRequestDTO userRequestDTO) {
         if(this.userRepository.findByEmail(userRequestDTO.email()) != null) {
             return ResponseEntity.badRequest().build();
@@ -43,21 +64,63 @@ public class UserController {
     }
 
     @GetMapping("/all")
+     @Operation(
+            summary = "Listar usuários",
+            description = "Retorna todos os usuários cadastrados"
+    )
+    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Lista de usuários retornada com sucesso",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = UserResponseDTO.class)
+            )
+    )
     public ResponseEntity<List<UserResponseDTO>> allUsers() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsers());
     }
 
     @GetMapping("/{idUser}")
+    @Operation(
+            summary = "Buscar usuário por ID",
+            description = "Retorna os dados de um usuário específico"
+    )
+    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Usuário encontrado",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = UserResponseDTO.class)
+            )
+    )
     public ResponseEntity<UserResponseDTO> userByID(@PathVariable Long idUser) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(idUser));
     }
 
     @PutMapping("/update/{idUser}")
+    @Operation(summary = "Editar um usuário", description = "Edita io usuário do ID fornecido")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Usuário não encontrado"),
+        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado"),
+        @ApiResponse(responseCode = "409", description = "Dados ja existentes")
+    })
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long idUser, @RequestBody UserRequestDTO userRequestDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(idUser, userRequestDTO));
     }
 
     @DeleteMapping("/delete/{idUser}")
+    @Operation(
+            summary = "Excluir usuário",
+            description = "Remove um usuário pelo ID"
+    )
+    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Usuário removido com sucesso"
+    )
     public ResponseEntity<String> deleteUser(@PathVariable Long idUser) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(idUser));
     }
