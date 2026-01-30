@@ -14,6 +14,7 @@ import com.br.apiToDoList.data.dto.request.TaskRequestDTO;
 import com.br.apiToDoList.data.dto.response.TaskResponseDTO;
 import com.br.apiToDoList.data.entity.Task;
 import com.br.apiToDoList.data.entity.User;
+import com.br.apiToDoList.exceptions.entity.EntityNotFoundException;
 import com.br.apiToDoList.repository.TaskRepository;
 import com.br.apiToDoList.repository.UserRepository;
 
@@ -77,6 +78,6 @@ public class TaskService {
 
 
     private Task findTaskById(Long idTask) {
-        return taskRepository.findById(idTask).orElseThrow(() -> new RuntimeException("Task not found"));
+        return taskRepository.findById(idTask).orElseThrow(() -> new EntityNotFoundException("Task not found"));
     }
 }

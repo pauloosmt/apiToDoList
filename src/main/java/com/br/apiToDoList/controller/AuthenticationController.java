@@ -108,9 +108,9 @@ public class AuthenticationController {
                     )
             )
     })
-    public ResponseEntity<UserResponseDTO> register(@RequestBody @Valid UserRequestDTO data){
+    public ResponseEntity<UserResponseDTO> register(@RequestBody @Valid UserRequestDTO data) throws IllegalAccessException{
         if(this.userRepository.findByEmail(data.email()) != null) {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalAccessException("email already registered");
         }
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         

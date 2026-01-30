@@ -20,6 +20,7 @@ import com.br.apiToDoList.exceptions.login.RestErrorMessage;
 @Order(1)
 public class GlobalExceptionHandler {
     
+    //Code 404
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<RestErrorMessage> handleEntityNotFound(EntityNotFoundException ex) {
         RestErrorMessage error = new RestErrorMessage(HttpStatus.NOT_FOUND, ex.getMessage());
@@ -27,5 +28,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    //Code 409
+    @ExceptionHandler(IllegalAccessException.class)
+    public ResponseEntity<RestErrorMessage> handleConflict(IllegalAccessException ex) {
+        RestErrorMessage error = new RestErrorMessage(HttpStatus.CONFLICT, ex.getMessage());
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
 
 }
