@@ -3,6 +3,7 @@ package com.br.apiToDoList.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -54,9 +55,9 @@ public class UserController {
                     schema = @Schema(implementation = UserResponseDTO.class)
             )
     )
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserRequestDTO userRequestDTO) {
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserRequestDTO userRequestDTO)  throws DataIntegrityViolationException{
         if(this.userRepository.findByEmail(userRequestDTO.email()) != null) {
-            return ResponseEntity.badRequest().build();
+            throw new DataIntegrityViolationException("email already registered");
         }
         String password = new BCryptPasswordEncoder().encode(userRequestDTO.password());
 

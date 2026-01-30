@@ -2,6 +2,7 @@ package com.br.apiToDoList.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -108,9 +109,9 @@ public class AuthenticationController {
                     )
             )
     })
-    public ResponseEntity<UserResponseDTO> register(@RequestBody @Valid UserRequestDTO data) throws IllegalAccessException{
+    public ResponseEntity<UserResponseDTO> register(@RequestBody @Valid UserRequestDTO data) throws DataIntegrityViolationException{
         if(this.userRepository.findByEmail(data.email()) != null) {
-            throw new IllegalAccessException("email already registered");
+            throw new DataIntegrityViolationException("email already registered");
         }
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         

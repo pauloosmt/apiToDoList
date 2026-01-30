@@ -3,6 +3,7 @@ package com.br.apiToDoList.exceptions.general;
 
 
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,8 +30,8 @@ public class GlobalExceptionHandler {
     }
 
     //Code 409
-    @ExceptionHandler(IllegalAccessException.class)
-    public ResponseEntity<RestErrorMessage> handleConflict(IllegalAccessException ex) {
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<RestErrorMessage> handleConflict(DataIntegrityViolationException ex) {
         RestErrorMessage error = new RestErrorMessage(HttpStatus.CONFLICT, ex.getMessage());
         
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
