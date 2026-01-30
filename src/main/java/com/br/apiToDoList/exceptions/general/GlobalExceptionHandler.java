@@ -2,10 +2,14 @@ package com.br.apiToDoList.exceptions.general;
 
 
 
+import java.util.List;
+
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -35,6 +39,27 @@ public class GlobalExceptionHandler {
         RestErrorMessage error = new RestErrorMessage(HttpStatus.CONFLICT, ex.getMessage());
         
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    //Authentication
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<RestErrorMessage> handleAuth() {
+        RestErrorMessage error = new RestErrorMessage(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+
+    //400
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<List<RestErrorMessage>> handleValidation (MethodArgumentNotValidException ex) {
+        List<RestErrorMessage> errors = ex.getBindingResult()
+            .getFieldErrors()
+            .stream()
+            .map(err -> new RestErrorMessage(HttpStatus.BAD_REQUEST, err.getField() + ": " + err.getDefaultMessage()))
+            .toList();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
 }
