@@ -12,8 +12,11 @@ import com.br.apiToDoList.data.dto.response.UserResponseDTO;
 import com.br.apiToDoList.data.entity.Task;
 import com.br.apiToDoList.data.entity.User;
 import com.br.apiToDoList.data.entity.UserRole;
+import com.br.apiToDoList.exceptions.entity.EntityNotFoundException;
 import com.br.apiToDoList.repository.TaskRepository;
 import com.br.apiToDoList.repository.UserRepository;
+
+
 
 @Service
 public class UserService {
@@ -81,6 +84,6 @@ public class UserService {
 
 
     private User findUserById(Long idUser) {
-        return userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(idUser).orElseThrow(() -> new EntityNotFoundException("User Not Found"));
     }
 }
