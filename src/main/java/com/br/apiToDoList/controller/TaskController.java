@@ -122,6 +122,14 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.deleteTask(idTask));
     }
 
+    @Operation(
+        summary = "Buscar tarefa por Status",
+        description = "Retorna todas as tarefas com algum determinado status (to_do, done, doing)"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Tarefas do status requisitado"),
+        @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
+    })
 
     @GetMapping("all/{status}")
     public ResponseEntity<List<TaskResponseDTO>> taskByStatus(@PathVariable String status, Authentication authentication) {
