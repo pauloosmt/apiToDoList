@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.apiToDoList.data.dto.request.UserRequestDTO;
+import com.br.apiToDoList.data.dto.response.ErrorResponseDTO;
 import com.br.apiToDoList.data.dto.response.UserResponseDTO;
 import com.br.apiToDoList.data.entity.UserRole;
 import com.br.apiToDoList.repository.UserRepository;
@@ -46,7 +47,9 @@ public class UserController {
             summary = "Cadastrar usuário",
             description = "Cria um novo usuário no sistema"
     )
-    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Credenciais inválidas", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
+    @ApiResponse(responseCode = "409", description = "Email já registrado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
     @ApiResponse(
             responseCode = "201",
             description = "Usuário criado com sucesso",
@@ -55,7 +58,7 @@ public class UserController {
                     schema = @Schema(implementation = UserResponseDTO.class)
             )
     )
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserRequestDTO userRequestDTO)  throws DataIntegrityViolationException{
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserRequestDTO userRequestDTO) throws DataIntegrityViolationException{
         if(this.userRepository.findByEmail(userRequestDTO.email()) != null) {
             throw new DataIntegrityViolationException("email already registered");
         }
@@ -69,7 +72,7 @@ public class UserController {
             summary = "Listar usuários",
             description = "Retorna todos os usuários cadastrados"
     )
-    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    @ApiResponse(responseCode = "401", description =  "Usuário não autenticado")
     @ApiResponse(
             responseCode = "200",
             description = "Lista de usuários retornada com sucesso",
@@ -87,15 +90,9 @@ public class UserController {
             summary = "Buscar usuário por ID",
             description = "Retorna os dados de um usuário específico"
     )
-    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
-    @ApiResponse(
-            responseCode = "200",
-            description = "Usuário encontrado",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = UserResponseDTO.class)
-            )
-    )
+    @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
+    @ApiResponse(responseCode = "200", description = "Usuário encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class)))
+    @ApiResponse(responseCode = "404", description =  "Usuário não encontrado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<UserResponseDTO> userByID(@PathVariable Long idUser) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(idUser));
     }
@@ -104,11 +101,15 @@ public class UserController {
     @Operation(summary = "Editar um usuário", description = "Edita io usuário do ID fornecido")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"),
-        @ApiResponse(responseCode = "400", description = "Usuário não encontrado"),
-        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado"),
-        @ApiResponse(responseCode = "409", description = "Dados ja existentes")
+        @ApiResponse(responseCode = "400", description = "Credenciais inválidas", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
+        @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
+        @ApiResponse(responseCode = "409", description = "Email já existente", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long idUser, @RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long idUser, @RequestBody @Valid UserRequestDTO userRequestDTO) {
+        if(this.userRepository.findByEmail(userRequestDTO.email()) != null) {
+            throw new DataIntegrityViolationException("email already registered");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(idUser, userRequestDTO));
     }
 
@@ -117,11 +118,9 @@ public class UserController {
             summary = "Excluir usuário",
             description = "Remove um usuário pelo ID"
     )
-    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
-    @ApiResponse(
-            responseCode = "200",
-            description = "Usuário removido com sucesso"
-    )
+    @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
+    @ApiResponse(responseCode = "404", description =  "Usuário não encontrado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
+    @ApiResponse(responseCode = "200", description = "Usuário removido com sucesso", content = @Content(mediaType = "text/plain",schema = @Schema(type = "string", example = "The user with the ID '10' was deleted!")))
     public ResponseEntity<String> deleteUser(@PathVariable Long idUser) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(idUser));
     }
