@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.apiToDoList.data.dto.request.TaskRequestDTO;
+import com.br.apiToDoList.data.dto.request.TaskUpdateDTO;
 import com.br.apiToDoList.data.dto.response.ErrorResponseDTO;
 import com.br.apiToDoList.data.dto.response.TaskResponseDTO;
 import com.br.apiToDoList.service.TaskService;
@@ -84,8 +85,8 @@ public class TaskController {
         @ApiResponse(responseCode = "400", description =  "Dados Inválidos", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
     })
 
-    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long idTask, @RequestBody @Valid TaskRequestDTO taskRequestDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(idTask, taskRequestDTO));
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long idTask, @RequestBody @Valid TaskUpdateDTO taskUpdateRequestDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(idTask, taskUpdateRequestDTO));
     }
 
     @GetMapping("/{idTask}")
@@ -119,6 +120,14 @@ public class TaskController {
 
     public ResponseEntity<String> deleteTask(@PathVariable Long idTask){
         return ResponseEntity.status(HttpStatus.OK).body(taskService.deleteTask(idTask));
+    }
+
+
+    @GetMapping("all/{status}")
+    public ResponseEntity<List<TaskResponseDTO>> taskByStatus(@PathVariable String status, Authentication authentication) {
+        String email = authentication.getName();
+
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.taskByStatus(status, email));
     }
 
 }

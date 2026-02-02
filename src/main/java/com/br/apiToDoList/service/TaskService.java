@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.br.apiToDoList.data.dto.request.TaskRequestDTO;
+import com.br.apiToDoList.data.dto.request.TaskUpdateDTO;
 import com.br.apiToDoList.data.dto.response.TaskResponseDTO;
 import com.br.apiToDoList.data.entity.Task;
 import com.br.apiToDoList.data.entity.User;
@@ -51,16 +52,24 @@ public class TaskService {
         
     }
 
-    public TaskResponseDTO updateTask(Long idTask, TaskRequestDTO taskRequestDTO) {
+    public List<TaskResponseDTO> taskByStatus(String status, String email) {
+        List<Task> tasksUser = taskRepository.findByUserEmail(email);
+
+        return tasksUser.stream().filter(
+                task -> task.getStatus().equalsIgnoreCase(status)
+        ).map(TaskResponseDTO::new).collect(Collectors.toList());
+    }
+
+    public TaskResponseDTO updateTask(Long idTask, TaskUpdateDTO taskUpdateRequestDTO) {
         Task task = findTaskById(idTask);
-        if(taskRequestDTO.name() != null && !taskRequestDTO.name().isBlank()) {
-            task.setName(taskRequestDTO.name());
+        if(taskUpdateRequestDTO.name() != null && !taskUpdateRequestDTO.name().isBlank()) {
+            task.setName(taskUpdateRequestDTO.name());
         } 
-        if(taskRequestDTO.status() != null && !taskRequestDTO.status().isBlank()) {
-            task.setStatus(taskRequestDTO.status());
+        if(taskUpdateRequestDTO.status() != null && !taskUpdateRequestDTO.status().isBlank()) {
+            task.setStatus(taskUpdateRequestDTO.status());
         }
-        if(taskRequestDTO.description() != null && !taskRequestDTO.description().isBlank()) {
-            task.setDescription(taskRequestDTO.description());
+        if(taskUpdateRequestDTO.description() != null && !taskUpdateRequestDTO.description().isBlank()) {
+            task.setDescription(taskUpdateRequestDTO.description());
         }
 
         taskRepository.save(task);

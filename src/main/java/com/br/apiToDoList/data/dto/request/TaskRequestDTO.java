@@ -14,7 +14,7 @@ public record TaskRequestDTO(
     String name, 
 
     @Schema(description = "Status da tarefa")
-    @Pattern(regexp = "^(to do|doing|done)$", message = "Situation must be 'to do', 'doing' or 'done'")
+    @Pattern(regexp = "^(to_do|doing|done)$", message = "Situation must be 'to_do', 'doing' or 'done'")
     String status,
 
     @Schema(description = "Descrição da tarefa", example = "Documentar a API corretamente")
