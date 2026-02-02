@@ -9,14 +9,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.br.apiToDoList.exceptions.entity.EntityNotFoundException;
 import com.br.apiToDoList.exceptions.login.RestErrorMessage;
-
-
 
 
 
@@ -50,7 +49,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    //400
+    //Code 400
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<RestErrorMessage>> handleValidation (MethodArgumentNotValidException ex) {
         List<RestErrorMessage> errors = ex.getBindingResult()
@@ -61,5 +60,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
+   
 
 }

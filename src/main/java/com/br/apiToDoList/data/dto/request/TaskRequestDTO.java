@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Pattern;
 @Schema(description = "Dados necessários para criar ou atualizar uma tarefa")
 public record TaskRequestDTO(
 
-    @Schema(description = "Título da tarefa", example = "Estudar LFA")
+    @Schema(description = "Título da tarefa", example = "Estudar o Projeto do ZettaLab")
     @NotBlank(message = "Name is required")
     String name, 
 

@@ -18,13 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.apiToDoList.data.dto.request.TaskRequestDTO;
+import com.br.apiToDoList.data.dto.response.ErrorResponseDTO;
 import com.br.apiToDoList.data.dto.response.TaskResponseDTO;
 import com.br.apiToDoList.service.TaskService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("task")
@@ -42,12 +46,12 @@ public class TaskController {
         description = "Cria uma nova tarefa informando título, descrição e status."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Tarefa criada com sucesso"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+        @ApiResponse(responseCode = "201", description = "Tarefa criada com sucesso", content = @Content(mediaType = "application/json",schema = @Schema(implementation = TaskResponseDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
+        @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
 
-    public ResponseEntity<?> createTask(@RequestBody TaskRequestDTO taskRequestDTO) {
+    public ResponseEntity<?> createTask(@RequestBody @Valid TaskRequestDTO taskRequestDTO) {
         
         String emailUser = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -61,7 +65,7 @@ public class TaskController {
         description = "Retorna uma lista com todas as tarefas cadastradas."
     )
     @ApiResponse(responseCode = "200", description = "Lista de tarefas retornada com sucesso")
-    @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+    @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<List<TaskResponseDTO>> getAllTasks(Authentication authentication) {
         String email = authentication.getName();
         
@@ -75,11 +79,12 @@ public class TaskController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Tarefa atualizada"),
-        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
-        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
+        @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
+        @ApiResponse(responseCode = "400", description =  "Dados Inválidos", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
     })
 
-    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long idTask, @RequestBody TaskRequestDTO taskRequestDTO) {
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long idTask, @RequestBody @Valid TaskRequestDTO taskRequestDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(idTask, taskRequestDTO));
     }
 
@@ -90,8 +95,8 @@ public class TaskController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Tarefa encontrada"),
-        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
-        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
+        @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
 
     public ResponseEntity<TaskResponseDTO> idTask(@PathVariable Long idTask) {
@@ -104,9 +109,12 @@ public class TaskController {
         description = "Remove uma tarefa pelo ID."
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Tarefa removida"),
-        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
-        @ApiResponse(responseCode = "403", description =  "Usuário não autenticado")
+        @ApiResponse(responseCode = "200", description = "Tarefa removida", content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(
+            type = "string", example = "The task with the ID '16' was deleted!"))),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
+        @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
 
     public ResponseEntity<String> deleteTask(@PathVariable Long idTask){

@@ -14,7 +14,7 @@ public record TaskResponseDTO(
 
     @Schema(description = "Título da tarefa", example = "Estudar o Projeto do ZettaLab")
     String name, 
-    @Schema(description = "Descrição da tarefa", example = "Estudar Swagger e Java")
+    @Schema(description = "Descrição da tarefa", example = "Documentar a API corretamente")
     String description,
 
     @Schema(description = "Status da tarefa", example = "TO DO | DONE | DOING")

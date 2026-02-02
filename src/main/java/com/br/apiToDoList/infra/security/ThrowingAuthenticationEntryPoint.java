@@ -10,9 +10,11 @@ import java.io.IOException;
 @Component
 public class ThrowingAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
-    public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
+    public void commence(HttpServletRequest request, HttpServletResponse response, 
                          AuthenticationException authException) throws IOException {
-        throw new SecurityCustomException("Invalid token or token not provided.");
+        
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"Access denied: the token provided is invalid.\"}");
     }
 }
