@@ -143,6 +143,9 @@ mvn spring-boot:run
 A aplicação estará disponível em:
 
 http://localhost:8080
+
+```
+
 🐳 Como Executar o Projeto com Docker
 Build da imagem
 docker build -t api-todolist .
