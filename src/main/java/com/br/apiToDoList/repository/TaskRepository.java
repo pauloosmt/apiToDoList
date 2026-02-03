@@ -11,8 +11,6 @@ import com.br.apiToDoList.data.entity.Task;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>{
 
-    List<Task> findByStatus(String status);
-
     @Query("SELECT t FROM Task t WHERE t.user.email = :email")
     List<Task> findByUserEmail(String email);
 }

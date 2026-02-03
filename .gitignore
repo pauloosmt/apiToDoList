@@ -34,3 +34,4 @@ build/
 
 ### Arquivo que contem dados pessoais ###
 *.properties
+*.env
