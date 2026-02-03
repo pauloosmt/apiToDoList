@@ -150,10 +150,12 @@ http://localhost:8080
 
 ## 🐳 Como Executar o Projeto com Docker
 
+### Build da imagem
 ```
-Build da imagem
 docker build -t api-todolist .
-Executar o container
+```
+### Executar o container
+```
 docker run -p 8080:8080 api-todolist
 Caso utilize PostgreSQL em container, recomenda-se o uso de Docker Compose.
 ```
