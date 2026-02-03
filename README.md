@@ -141,7 +141,7 @@ spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 
 ---
 
-# ▶️ Como Executar o Projeto (Sem Docker)
+## ▶️ Como Executar o Projeto (Sem Docker)
 ```
 git clone https://github.com/pauloosmt/apiToDoList.git
 cd apiToDoList
@@ -152,7 +152,7 @@ http://localhost:8080
 
 ---
 
-# 🐳 Como Executar o Projeto com Docker
+## 🐳 Como Executar o Projeto com Docker
 
 ```
 Build da imagem
@@ -164,15 +164,15 @@ Caso utilize PostgreSQL em container, recomenda-se o uso de Docker Compose.
 
 ---
 
-# 📖 Documentação Swagger
+## 📖 Documentação Swagger
 A documentação interativa da API pode ser acessada em:
 http://localhost:8080/swagger-ui/index.html
 
 --- 
 
-# 🔗 Endpoints da API
+## 🔗 Endpoints da API
 
-## Criar tarefa
+### Criar tarefa
 POST /tasks
 ```
 {
@@ -185,33 +185,33 @@ POST /tasks
 
 ---
 
-## Listar tarefas
+### Listar tarefas
 GET /tasks
 
 ---
 
-## Buscar tarefa por ID
+### Buscar tarefa por ID
 GET /tasks/{id}
 
 ---
 
-## Atualizar tarefa
+### Atualizar tarefa
 PUT /tasks/{id}
 
 ---
 
-## Remover tarefa
+### Remover tarefa
 DELETE /tasks/{id}
 
 ---
 
-# 🧪 Exemplo de Uso via cURL
+## 🧪 Exemplo de Uso via cURL
 curl -X GET http://localhost:8080/tasks
 
 ---
 
-# ❗ Tratamento de Erros
-## Exemplo de resposta de erro:
+## ❗ Tratamento de Erros
+### Exemplo de resposta de erro:
 ```
 {
   "status": 400,
@@ -221,7 +221,7 @@ curl -X GET http://localhost:8080/tasks
 
 ---
 
-# Códigos HTTP Utilizados
+## Códigos HTTP Utilizados
 200 OK
 
 201 Created
@@ -236,12 +236,12 @@ curl -X GET http://localhost:8080/tasks
 
 ---
 
-# 📦 Versionamento
+## 📦 Versionamento
 O projeto utiliza Git para controle de versão do código-fonte.
 
 ---
 
-# 🧑‍💻 Autor
+## 🧑‍💻 Autor
 Paulo Taciano
 GitHub: https://github.com/pauloosmt
  
