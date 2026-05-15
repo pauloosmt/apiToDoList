@@ -1,6 +1,6 @@
 export default class TaskService {
     constructor() {
-        this.baseUrl = 'http://localhost:8080';
+        this.baseUrl = 'https://apitodolist-kh1i.onrender.com';
         this.token = localStorage.getItem('jwt_token') || null;
     }
 
