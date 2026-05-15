@@ -19,7 +19,10 @@
       </div>
       Minhas Tarefas
     </div>
-    <span class="date-badge" id="header-date"></span>
+    <div class="header-right" style="display: flex; gap: 8px; align-items: center;">
+      <button id="admin-btn" class="btn btn-ghost" onclick="app.showAdminSection()" style="display: none; padding: 4px 10px; font-size: 11px;">Admin Panel</button>
+      <span class="date-badge" id="header-date"></span>
+    </div>
   </div>
 </header>
 
@@ -68,6 +71,8 @@
       <button class="btn btn-ghost" onclick="app.logout()" style="padding: 6px 12px; font-size: 12px;">Sair</button>
     </div>
 
+    <div id="dashboard-container" class="dashboard-section"></div>
+
     <div class="add-form">
       <h3>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -108,14 +113,33 @@
       </div>
     </div>
 
-    <div class="filters">
-      <button class="filter-btn active" onclick="app.setFilter('ALL', this)">Todas</button>
-      <button class="filter-btn" onclick="app.setFilter('PENDING', this)">Pendentes</button>
-      <button class="filter-btn" onclick="app.setFilter('IN_PROGRESS', this)">Em andamento</button>
-      <button class="filter-btn" onclick="app.setFilter('DONE', this)">Concluídas</button>
+    <div class="filters-container">
+      <div class="filters">
+        <button class="filter-btn active" onclick="app.setFilter('ALL', this)">Todas</button>
+        <button class="filter-btn" onclick="app.setFilter('PENDING', this)">Pendentes</button>
+        <button class="filter-btn" onclick="app.setFilter('IN_PROGRESS', this)">Em andamento</button>
+        <button class="filter-btn" onclick="app.setFilter('DONE', this)">Concluídas</button>
+      </div>
+      <div class="filters">
+        <button class="filter-btn date-filter-btn active" onclick="app.setDateFilter('ALL', this)">Todo tempo</button>
+        <button class="filter-btn date-filter-btn" onclick="app.setDateFilter('WEEK', this)">Esta Semana</button>
+        <button class="filter-btn date-filter-btn" onclick="app.setDateFilter('MONTH', this)">Este Mês</button>
+      </div>
     </div>
 
     <div id="tasks-container"></div>
+  </section>
+
+  <section id="admin-section" style="display: none;">
+    <div class="day-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <div class="day-title">Painel Administrativo</div>
+      <button class="btn btn-ghost" onclick="app.showTasksSection()" style="padding: 6px 12px; font-size: 12px;">Voltar às Tarefas</button>
+    </div>
+    
+    <div class="add-form">
+      <h3>Usuários Cadastrados</h3>
+      <div id="admin-users-container"></div>
+    </div>
   </section>
 </main>
 

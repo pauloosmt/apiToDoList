@@ -108,4 +108,13 @@ export default class TaskService {
         if (!res.ok) throw new Error('Erro ' + res.status);
         return await res.text();
     }
+
+    async getAllUsers() {
+        const res = await fetch(`${this.baseUrl}/user/all`, {
+            headers: this.getHeaders()
+        });
+        if (res.status === 401) throw new Error('UNAUTHORIZED');
+        if (!res.ok) throw new Error('Erro ' + res.status);
+        return await res.json();
+    }
 }

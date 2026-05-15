@@ -111,6 +111,73 @@ export default class UIManager {
         return `${d}/${m}/${y}`;
     }
 
+    renderDashboard(tasks) {
+        const total = tasks.length;
+        const done = tasks.filter(t => t.status === 'DONE').length;
+        const pending = tasks.filter(t => t.status === 'PENDING').length;
+        const inProgress = tasks.filter(t => t.status === 'IN_PROGRESS').length;
+        const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+        const dashboard = document.getElementById('dashboard-container');
+        if (!dashboard) return;
+
+        dashboard.innerHTML = `
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <div class="dash-val">${total}</div>
+                    <div class="dash-label">Total</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-val" style="color: #c9920a">${pending}</div>
+                    <div class="dash-label">Pendentes</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-val" style="color: #5b9bd5">${inProgress}</div>
+                    <div class="dash-label">Fazendo</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-val" style="color: var(--accent)">${done}</div>
+                    <div class="dash-label">Concluídas</div>
+                </div>
+            </div>
+            <div class="progress-wrap">
+                <div class="progress-bar" style="width: ${percent}%"></div>
+                <span class="progress-text">${percent}% Completo</span>
+            </div>
+        `;
+    }
+
+    renderAdminUsers(users) {
+        const container = document.getElementById('admin-users-container');
+        if (!users.length) {
+            container.innerHTML = '<p style="text-align:center; padding:2rem; color:var(--text-light)">Nenhum usuário cadastrado.</p>';
+            return;
+        }
+
+        container.innerHTML = `
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Cargo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${users.map(u => `
+                        <tr>
+                            <td>${u.id}</td>
+                            <td>${this.escHtml(u.name || '')}</td>
+                            <td>${this.escHtml(u.email)}</td>
+                            <td><span class="status-pill status-DONE">${u.role || 'USER'}</span></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
     statusLabel(s) {
         const map = { PENDING: 'Pendente', IN_PROGRESS: 'Em andamento', DONE: 'Concluída' };
         return map[s] || s;
