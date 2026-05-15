@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                                     "/v3/api-docs/**",
                                                 "/swagger-ui/**",
                                                 "/swagger-ui.html").permitAll()
+                                    .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
                                     .anyRequest().authenticated()
                                     ).exceptionHandling(ex -> ex.authenticationEntryPoint(throwingAuthenticationEntryPoint))
                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

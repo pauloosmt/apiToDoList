@@ -85,8 +85,9 @@ public class TaskController {
         @ApiResponse(responseCode = "400", description =  "Dados Inválidos", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class))),
     })
 
-    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long idTask, @RequestBody @Valid TaskUpdateDTO taskUpdateRequestDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(idTask, taskUpdateRequestDTO));
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long idTask, @RequestBody @Valid TaskUpdateDTO taskUpdateRequestDTO, Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(idTask, taskUpdateRequestDTO, email));
     }
 
     @GetMapping("/{idTask}")
@@ -100,8 +101,9 @@ public class TaskController {
         @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
 
-    public ResponseEntity<TaskResponseDTO> idTask(@PathVariable Long idTask) {
-        return ResponseEntity.status(HttpStatus.OK).body(taskService.getTaskByID(idTask));
+    public ResponseEntity<TaskResponseDTO> idTask(@PathVariable Long idTask, Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.getTaskByID(idTask, email));
     }
 
     @DeleteMapping("/delete/{idTask}")
@@ -118,8 +120,9 @@ public class TaskController {
         @ApiResponse(responseCode = "401", description =  "Usuário não autenticado", content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
 
-    public ResponseEntity<String> deleteTask(@PathVariable Long idTask){
-        return ResponseEntity.status(HttpStatus.OK).body(taskService.deleteTask(idTask));
+    public ResponseEntity<String> deleteTask(@PathVariable Long idTask, Authentication authentication){
+        String email = authentication.getName();
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.deleteTask(idTask, email));
     }
 
     @Operation(

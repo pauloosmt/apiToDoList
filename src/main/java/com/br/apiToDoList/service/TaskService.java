@@ -1,11 +1,8 @@
 package com.br.apiToDoList.service;
 
-
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +25,8 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public TaskResponseDTO getTaskByID(Long idTask) {
-        Task task = findTaskById(idTask);
+    public TaskResponseDTO getTaskByID(Long idTask, String email) {
+        Task task = findTaskByIdAndUser(idTask, email);
         return new TaskResponseDTO(task);
     }
 
@@ -41,7 +38,7 @@ public class TaskService {
         task.setDataTask(LocalDate.now());
 
         taskRepository.save(task);
-           
+
         return new TaskResponseDTO(task);
     }
 
@@ -49,27 +46,30 @@ public class TaskService {
         List<Task> tasks = taskRepository.findByUserEmail(email);
 
         return tasks.stream().map(TaskResponseDTO::new).collect(Collectors.toList());
-        
+
     }
 
     public List<TaskResponseDTO> taskByStatus(String status, String email) {
         List<Task> tasksUser = taskRepository.findByUserEmail(email);
 
         return tasksUser.stream().filter(
-                task -> task.getStatus().equalsIgnoreCase(status)
-        ).map(TaskResponseDTO::new).collect(Collectors.toList());
+                task -> task.getStatus().equalsIgnoreCase(status)).map(TaskResponseDTO::new)
+                .collect(Collectors.toList());
     }
 
-    public TaskResponseDTO updateTask(Long idTask, TaskUpdateDTO taskUpdateRequestDTO) {
-        Task task = findTaskById(idTask);
-        if(taskUpdateRequestDTO.name() != null && !taskUpdateRequestDTO.name().isBlank()) {
+    public TaskResponseDTO updateTask(Long idTask, TaskUpdateDTO taskUpdateRequestDTO, String email) {
+        Task task = findTaskByIdAndUser(idTask, email);
+        if (taskUpdateRequestDTO.name() != null && !taskUpdateRequestDTO.name().isBlank()) {
             task.setName(taskUpdateRequestDTO.name());
-        } 
-        if(taskUpdateRequestDTO.status() != null && !taskUpdateRequestDTO.status().isBlank()) {
+        }
+        if (taskUpdateRequestDTO.status() != null && !taskUpdateRequestDTO.status().isBlank()) {
             task.setStatus(taskUpdateRequestDTO.status());
         }
-        if(taskUpdateRequestDTO.description() != null && !taskUpdateRequestDTO.description().isBlank()) {
+        if (taskUpdateRequestDTO.description() != null && !taskUpdateRequestDTO.description().isBlank()) {
             task.setDescription(taskUpdateRequestDTO.description());
+        }
+        if (taskUpdateRequestDTO.dataTask() != null) {
+            task.setDataTask(taskUpdateRequestDTO.dataTask());
         }
 
         taskRepository.save(task);
@@ -77,16 +77,18 @@ public class TaskService {
         return new TaskResponseDTO(task);
     }
 
-    public String deleteTask(Long idTask) {
-        Task task = findTaskById(idTask);
+    public String deleteTask(Long idTask, String email) {
+        Task task = findTaskByIdAndUser(idTask, email);
         taskRepository.delete(task);
 
-        return "The task with the ID '"+ task.getIdTask() + "' was deleted!";
+        return "The task with the ID '" + task.getIdTask() + "' was deleted!";
     }
 
-
-
-    private Task findTaskById(Long idTask) {
-        return taskRepository.findById(idTask).orElseThrow(() -> new EntityNotFoundException("Task not found"));
+    private Task findTaskByIdAndUser(Long idTask, String email) {
+        Task task = taskRepository.findById(idTask).orElseThrow(() -> new EntityNotFoundException("Task not found"));
+        if (!task.getUser().getEmail().equals(email)) {
+            throw new EntityNotFoundException("Task not found"); // Oculta a existência da task se não pertencer ao usuário
+        }
+        return task;
     }
 }
