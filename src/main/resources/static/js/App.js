@@ -44,7 +44,7 @@ class App {
     }
 
     isAdmin() {
-        return this.currentEmail === ADMIN_EMAIL;
+        return !!this.service.getToken() && this.currentEmail === ADMIN_EMAIL;
     }
 
     updateAdminButton() {
@@ -56,6 +56,7 @@ class App {
         document.getElementById('auth-section').style.display = 'block';
         document.getElementById('tasks-section').style.display = 'none';
         document.getElementById('admin-section').style.display = 'none';
+        this.updateAdminButton();
     }
 
     showTasksSection() {
