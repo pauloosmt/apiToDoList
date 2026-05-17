@@ -201,6 +201,16 @@ class App {
             }
         }
 
+        // Sort by date ascending, then by idTask ascending
+        list = [...list].sort((a, b) => {
+            if (!a.dataTask && !b.dataTask) return a.idTask - b.idTask;
+            if (!a.dataTask) return 1;
+            if (!b.dataTask) return -1;
+            const dateComp = a.dataTask.localeCompare(b.dataTask);
+            if (dateComp !== 0) return dateComp;
+            return a.idTask - b.idTask;
+        });
+
         this.ui.renderTasks(list);
     }
 
