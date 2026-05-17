@@ -1,6 +1,6 @@
 package com.br.apiToDoList.data.dto.request;
 
-
+import java.time.LocalDate;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -18,7 +18,10 @@ public record TaskRequestDTO(
     String status,
 
     @Schema(description = "Descrição da tarefa", example = "Documentar a API corretamente")
-    String description
+    String description,
+
+    @Schema(description = "Data opcional da tarefa", example = "2026-05-17")
+    LocalDate dataTask
 
 ) {
 

@@ -35,7 +35,11 @@ public class TaskService {
 
         Task task = new Task(taskRequestDTO, user);
 
-        task.setDataTask(LocalDate.now());
+        if (taskRequestDTO.dataTask() != null) {
+            task.setDataTask(taskRequestDTO.dataTask());
+        } else {
+            task.setDataTask(LocalDate.now());
+        }
 
         taskRepository.save(task);
 
@@ -87,7 +91,8 @@ public class TaskService {
     private Task findTaskByIdAndUser(Long idTask, String email) {
         Task task = taskRepository.findById(idTask).orElseThrow(() -> new EntityNotFoundException("Task not found"));
         if (!task.getUser().getEmail().equals(email)) {
-            throw new EntityNotFoundException("Task not found"); // Oculta a existência da task se não pertencer ao usuário
+            throw new EntityNotFoundException("Task not found"); // Oculta a existência da task se não pertencer ao
+                                                                 // usuário
         }
         return task;
     }
