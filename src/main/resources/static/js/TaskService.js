@@ -1,6 +1,13 @@
 export default class TaskService {
     constructor() {
-        this.baseUrl = 'https://apitodolist-kh1i.onrender.com';
+        // Se estiver rodando na Vercel, o backend está no Render.
+        // Se estiver rodando localmente ou no Render, usa o próprio origin.
+        const hostname = window.location.hostname;
+        if (hostname.includes('vercel.app')) {
+            this.baseUrl = 'https://apitodolist-kh1i.onrender.com';
+        } else {
+            this.baseUrl = window.location.origin;
+        }
         this.token = localStorage.getItem('jwt_token') || null;
     }
 

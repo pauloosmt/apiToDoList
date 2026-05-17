@@ -34,15 +34,6 @@ class App {
         }
     }
 
-    getBaseUrlInput() {
-        return document.getElementById('base-url').value;
-    }
-
-    connect() {
-        this.service.setBaseUrl(this.getBaseUrlInput());
-        if (this.service.getToken()) this.loadTasks();
-    }
-
     isAdmin() {
         return !!this.service.getToken() && this.currentEmail === ADMIN_EMAIL;
     }
