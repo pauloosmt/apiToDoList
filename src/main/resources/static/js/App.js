@@ -27,8 +27,49 @@ class App {
         if (this.service.getToken()) {
             this.showTasksSection();
             this.loadTasks();
+            this.checkAdminStatus();
         } else {
             this.showAuthSection();
+        }
+    }
+
+    async checkAdminStatus() {
+        if (!this.service.getToken()) {
+            this.removeAdminButton();
+            document.getElementById('admin-container').innerHTML = '';
+            return;
+        }
+        try {
+            const html = await this.service.getAdminPanelHTML();
+            document.getElementById('admin-container').innerHTML = html;
+            this.injectAdminButton();
+        } catch (e) {
+            document.getElementById('admin-container').innerHTML = '';
+            this.removeAdminButton();
+        }
+    }
+
+    injectAdminButton() {
+        let btn = document.getElementById('admin-btn');
+        if (!btn) {
+            btn = document.createElement('button');
+            btn.id = 'admin-btn';
+            btn.className = 'btn btn-ghost';
+            btn.style.padding = '4px 10px';
+            btn.style.fontSize = '11px';
+            btn.textContent = 'Painel Admin';
+            btn.onclick = () => this.showAdminSection();
+            const headerRight = document.querySelector('.header-right');
+            if (headerRight) {
+                headerRight.insertBefore(btn, headerRight.firstChild);
+            }
+        }
+    }
+
+    removeAdminButton() {
+        const btn = document.getElementById('admin-btn');
+        if (btn) {
+            btn.remove();
         }
     }
 
@@ -59,11 +100,15 @@ class App {
                 return;
             }
         }
-        document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('tasks-section').style.display = 'none';
-        adminSec.style.display = 'block';
-        this.currentView = 'admin';
-        this.loadAdminData();
+        if (adminSec) {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('tasks-section').style.display = 'none';
+            adminSec.style.display = 'block';
+            this.currentView = 'admin';
+            this.loadAdminData();
+        } else {
+            this.showTasksSection();
+        }
     }
 
     toggleAuthMode() {
@@ -100,6 +145,7 @@ class App {
             localStorage.setItem('user_email', email);
             this.showTasksSection();
             this.loadTasks();
+            this.checkAdminStatus();
             document.getElementById('auth-password').value = '';
         } catch (e) {
             this.ui.showToast(e.message, 'error');
@@ -112,6 +158,8 @@ class App {
         this.service.setToken(null);
         this.currentEmail = null;
         localStorage.removeItem('user_email');
+        this.removeAdminButton();
+        document.getElementById('admin-container').innerHTML = '';
         this.tasks = [];
         this.ui.renderTasks([]);
         this.showAuthSection();
