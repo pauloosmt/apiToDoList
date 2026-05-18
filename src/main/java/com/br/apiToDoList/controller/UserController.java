@@ -68,15 +68,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequestDTO, password, role));
     }
 
-    @GetMapping("/admin-check")
+    @GetMapping(value = "/admin-panel", produces = "text/html")
     @Operation(
-            summary = "Verificar acesso de administrador",
-            description = "Endpoint leve para checagem de privilégios pelo frontend"
+            summary = "Carregar painel do administrador",
+            description = "Retorna o fragmento HTML do painel de administração se o usuário for ADMIN"
     )
-    @ApiResponse(responseCode = "200", description = "Usuário é administrador")
-    @ApiResponse(responseCode = "403", description = "Acesso negado")
-    public ResponseEntity<Void> checkAdminAccess() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> getAdminPanel() throws java.io.IOException {
+        org.springframework.core.io.ClassPathResource resource = new org.springframework.core.io.ClassPathResource("private/admin.html");
+        String html = org.springframework.util.StreamUtils.copyToString(resource.getInputStream(), java.nio.charset.StandardCharsets.UTF_8);
+        return ResponseEntity.ok(html);
     }
 
     @GetMapping("/all")

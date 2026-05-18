@@ -33,39 +33,42 @@ class App {
         }
     }
 
-    async updateAdminButton() {
+    updateAdminButton() {
         const btn = document.getElementById('admin-btn');
-        if (!btn) return;
-        if (!this.service.getToken()) {
-            btn.style.display = 'none';
-            return;
-        }
-        try {
-            await this.service.checkAdminAccess();
-            btn.style.display = 'inline-flex';
-        } catch (e) {
-            btn.style.display = 'none';
-        }
+        if (btn) btn.style.display = this.service.getToken() ? 'inline-flex' : 'none';
     }
 
     showAuthSection() {
         document.getElementById('auth-section').style.display = 'block';
         document.getElementById('tasks-section').style.display = 'none';
-        document.getElementById('admin-section').style.display = 'none';
+        const adminSec = document.getElementById('admin-section');
+        if (adminSec) adminSec.style.display = 'none';
         this.updateAdminButton();
     }
 
     showTasksSection() {
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('tasks-section').style.display = 'block';
-        document.getElementById('admin-section').style.display = 'none';
+        const adminSec = document.getElementById('admin-section');
+        if (adminSec) adminSec.style.display = 'none';
         this.currentView = 'tasks';
     }
 
-    showAdminSection() {
+    async showAdminSection() {
+        let adminSec = document.getElementById('admin-section');
+        if (!adminSec) {
+            try {
+                const html = await this.service.getAdminPanelHTML();
+                document.getElementById('admin-container').innerHTML = html;
+                adminSec = document.getElementById('admin-section');
+            } catch (e) {
+                this.ui.showToast('Acesso negado ao painel administrativo.', 'error');
+                return;
+            }
+        }
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('tasks-section').style.display = 'none';
-        document.getElementById('admin-section').style.display = 'block';
+        adminSec.style.display = 'block';
         this.currentView = 'admin';
         this.loadAdminData();
     }
