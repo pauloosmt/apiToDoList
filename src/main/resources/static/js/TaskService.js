@@ -116,6 +116,14 @@ export default class TaskService {
         return await res.text();
     }
 
+    async checkAdminAccess() {
+        const res = await fetch(`${this.baseUrl}/user/admin-check`, {
+            headers: this.getHeaders()
+        });
+        if (!res.ok) throw new Error('Acesso negado');
+        return true;
+    }
+
     async getAllUsers() {
         const res = await fetch(`${this.baseUrl}/user/all`, {
             headers: this.getHeaders()

@@ -68,6 +68,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequestDTO, password, role));
     }
 
+    @GetMapping("/admin-check")
+    @Operation(
+            summary = "Verificar acesso de administrador",
+            description = "Endpoint leve para checagem de privilégios pelo frontend"
+    )
+    @ApiResponse(responseCode = "200", description = "Usuário é administrador")
+    @ApiResponse(responseCode = "403", description = "Acesso negado")
+    public ResponseEntity<Void> checkAdminAccess() {
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/all")
      @Operation(
             summary = "Listar usuários",

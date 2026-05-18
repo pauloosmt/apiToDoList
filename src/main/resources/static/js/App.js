@@ -33,13 +33,19 @@ class App {
         }
     }
 
-    isAdmin() {
-        return !!this.service.getToken() && localStorage.getItem('user_role') === 'ADMIN';
-    }
-
-    updateAdminButton() {
+    async updateAdminButton() {
         const btn = document.getElementById('admin-btn');
-        if (btn) btn.style.display = this.isAdmin() ? 'inline-flex' : 'none';
+        if (!btn) return;
+        if (!this.service.getToken()) {
+            btn.style.display = 'none';
+            return;
+        }
+        try {
+            await this.service.checkAdminAccess();
+            btn.style.display = 'inline-flex';
+        } catch (e) {
+            btn.style.display = 'none';
+        }
     }
 
     showAuthSection() {
@@ -57,7 +63,6 @@ class App {
     }
 
     showAdminSection() {
-        if (!this.isAdmin()) return;
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('tasks-section').style.display = 'none';
         document.getElementById('admin-section').style.display = 'block';
@@ -88,16 +93,12 @@ class App {
         const btn = document.getElementById('btn-login');
         btn.disabled = true;
         try {
-            let data;
             if (this.isLoginMode) {
-                data = await this.service.login(email, password);
+                await this.service.login(email, password);
                 this.ui.showToast('Login realizado com sucesso!', 'success');
             } else {
-                data = await this.service.register(email, password);
+                await this.service.register(email, password);
                 this.ui.showToast('Conta criada com sucesso!', 'success');
-            }
-            if (data && data.role) {
-                localStorage.setItem('user_role', data.role);
             }
             this.currentEmail = email;
             localStorage.setItem('user_email', email);
@@ -116,7 +117,6 @@ class App {
         this.service.setToken(null);
         this.currentEmail = null;
         localStorage.removeItem('user_email');
-        localStorage.removeItem('user_role');
         this.tasks = [];
         this.ui.renderTasks([]);
         this.showAuthSection();

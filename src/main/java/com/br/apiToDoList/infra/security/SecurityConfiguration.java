@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                                 "/swagger-ui.html")
                         .permitAll()
                         .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/user/admin-check").hasRole("ADMIN")
                         .requestMatchers("/user/all").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(throwingAuthenticationEntryPoint))
