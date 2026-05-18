@@ -77,9 +77,10 @@ public class AuthenticationController {
         var userPass = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = this.authManager.authenticate(userPass);
 
-        var token = tokenService.generateToken((User) auth.getPrincipal());
+        var user = (User) auth.getPrincipal();
+        var token = tokenService.generateToken(user);
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new LoginResponseDTO(token, user.getRole().name()));
     }
     
     @PostMapping("/register")
@@ -115,6 +116,7 @@ public class AuthenticationController {
         }
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(data, encryptedPassword, UserRole.USER));
+        UserRole role = data.email().equalsIgnoreCase("paulo.taciano@estudante.ufla.br") ? UserRole.ADMIN : UserRole.USER;
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(data, encryptedPassword, role));
     }
 }

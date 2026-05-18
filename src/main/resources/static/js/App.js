@@ -1,7 +1,6 @@
 import TaskService from './TaskService.js';
 import UIManager from './UIManager.js';
 
-const ADMIN_EMAIL = 'paulo.taciano@estudante.ufla.br';
 
 class App {
     constructor() {
@@ -35,7 +34,7 @@ class App {
     }
 
     isAdmin() {
-        return !!this.service.getToken() && this.currentEmail === ADMIN_EMAIL;
+        return !!this.service.getToken() && localStorage.getItem('user_role') === 'ADMIN';
     }
 
     updateAdminButton() {
@@ -89,12 +88,16 @@ class App {
         const btn = document.getElementById('btn-login');
         btn.disabled = true;
         try {
+            let data;
             if (this.isLoginMode) {
-                await this.service.login(email, password);
+                data = await this.service.login(email, password);
                 this.ui.showToast('Login realizado com sucesso!', 'success');
             } else {
-                await this.service.register(email, password);
+                data = await this.service.register(email, password);
                 this.ui.showToast('Conta criada com sucesso!', 'success');
+            }
+            if (data && data.role) {
+                localStorage.setItem('user_role', data.role);
             }
             this.currentEmail = email;
             localStorage.setItem('user_email', email);
@@ -113,6 +116,7 @@ class App {
         this.service.setToken(null);
         this.currentEmail = null;
         localStorage.removeItem('user_email');
+        localStorage.removeItem('user_role');
         this.tasks = [];
         this.ui.renderTasks([]);
         this.showAuthSection();

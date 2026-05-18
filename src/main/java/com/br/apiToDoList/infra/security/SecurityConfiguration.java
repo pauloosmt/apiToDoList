@@ -1,6 +1,5 @@
 package com.br.apiToDoList.infra.security;
 
-
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,43 +22,44 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    
+
     @Autowired
     private ThrowingAuthenticationEntryPoint throwingAuthenticationEntryPoint;
 
-    
     @Autowired
     SecurityFilter securityFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-               .csrf(csrf -> csrf.disable())
-               .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-               .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-               .authorizeHttpRequests(authorize -> authorize
-                                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                                    .requestMatchers(HttpMethod.POST, "/auth/register" ).permitAll()
-                                    .requestMatchers(
-                                    "/v3/api-docs/**",
-                                                "/swagger-ui/**",
-                                                "/swagger-ui.html").permitAll()
-                                    .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
-                                    .anyRequest().authenticated()
-                                    ).exceptionHandling(ex -> ex.authenticationEntryPoint(throwingAuthenticationEntryPoint))
-               .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-               .build();
-    }       
-    
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
+                        .permitAll()
+                        .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/user/all").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(throwingAuthenticationEntryPoint))
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
     @Bean
-    public AuthenticationManager authManager(AuthenticationConfiguration authenticationConfiguration)  throws Exception{
+    public AuthenticationManager authManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*")); 
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
