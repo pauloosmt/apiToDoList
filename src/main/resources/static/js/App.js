@@ -27,15 +27,9 @@ class App {
         if (this.service.getToken()) {
             this.showTasksSection();
             this.loadTasks();
-            this.updateAdminButton();
         } else {
             this.showAuthSection();
         }
-    }
-
-    updateAdminButton() {
-        const btn = document.getElementById('admin-btn');
-        if (btn) btn.style.display = this.service.getToken() ? 'inline-flex' : 'none';
     }
 
     showAuthSection() {
@@ -43,7 +37,6 @@ class App {
         document.getElementById('tasks-section').style.display = 'none';
         const adminSec = document.getElementById('admin-section');
         if (adminSec) adminSec.style.display = 'none';
-        this.updateAdminButton();
     }
 
     showTasksSection() {
@@ -62,7 +55,7 @@ class App {
                 document.getElementById('admin-container').innerHTML = html;
                 adminSec = document.getElementById('admin-section');
             } catch (e) {
-                this.ui.showToast('Acesso negado ao painel administrativo.', 'error');
+                this.showTasksSection();
                 return;
             }
         }
@@ -107,7 +100,6 @@ class App {
             localStorage.setItem('user_email', email);
             this.showTasksSection();
             this.loadTasks();
-            this.updateAdminButton();
             document.getElementById('auth-password').value = '';
         } catch (e) {
             this.ui.showToast(e.message, 'error');

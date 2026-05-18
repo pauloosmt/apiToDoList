@@ -1,6 +1,5 @@
 package com.br.apiToDoList.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -36,91 +35,57 @@ import jakarta.validation.Valid;
 @RequestMapping("auth")
 @Tag(name = "Autenticação", description = "Endpoints para registrar/logar um usuário no banco de dados")
 public class AuthenticationController {
- 
 
-    @Autowired
-    private TokenService tokenService;
+        @Autowired
+        private TokenService tokenService;
 
-    @Autowired
-    private AuthenticationManager authManager;
+        @Autowired
+        private AuthenticationManager authManager;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
+        @Autowired
+        private UserService userService;
 
-    @PostMapping("/login")
-    @Operation(
-            summary = "Autenticar usuário",
-            description = "Realiza login e retorna um token JWT"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Usuário autenticado com sucesso",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = LoginResponseDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Credenciais inválidas",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseDTO.class)
-                    )
-            )
-    })
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationRequesDTO data) {
-        var userPass = new UsernamePasswordAuthenticationToken(data.email(), data.password());
-        var auth = this.authManager.authenticate(userPass);
+        @PostMapping("/login")
+        @Operation(summary = "Autenticar usuário", description = "Realiza login e retorna um token JWT")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "Usuário autenticado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Credenciais inválidas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDTO.class)))
+        })
+        public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationRequesDTO data) {
+                var userPass = new UsernamePasswordAuthenticationToken(data.email(), data.password());
+                var auth = this.authManager.authenticate(userPass);
 
-        var user = (User) auth.getPrincipal();
-        if (user.getEmail().equalsIgnoreCase("paulo.taciano@estudante.ufla.br") && user.getRole() != UserRole.ADMIN) {
-            user.setRole(UserRole.ADMIN);
-            this.userRepository.save(user);
+                var user = (User) auth.getPrincipal();
+                if (user.getEmail().equalsIgnoreCase("paulo.taciano@estudante.ufla.br")
+                                && user.getRole() != UserRole.ADMIN) {
+                        user.setRole(UserRole.ADMIN);
+                        this.userRepository.save(user);
+                }
+                var token = tokenService.generateToken(user);
+
+                return ResponseEntity.ok(new LoginResponseDTO(token));
         }
-        var token = tokenService.generateToken(user);
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
-    }
-    
-    @PostMapping("/register")
-    @Operation(
-            summary = "Registrar usuário",
-            description = "Cria um novo usuário no sistema"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Usuário registrado com sucesso"
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Email já cadastrado",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Dados inválidos",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseDTO.class)
-                    )
-            )
-    })
-    public ResponseEntity<UserResponseDTO> register(@RequestBody @Valid UserRequestDTO data) throws DataIntegrityViolationException{
-        if(this.userRepository.findByEmail(data.email()) != null) {
-            throw new DataIntegrityViolationException("email already registered");
+        @PostMapping("/register")
+        @Operation(summary = "Registrar usuário", description = "Cria um novo usuário no sistema")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "201", description = "Usuário registrado com sucesso"),
+                        @ApiResponse(responseCode = "409", description = "Email já cadastrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDTO.class))),
+                        @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDTO.class)))
+        })
+        public ResponseEntity<UserResponseDTO> register(@RequestBody @Valid UserRequestDTO data)
+                        throws DataIntegrityViolationException {
+                if (this.userRepository.findByEmail(data.email()) != null) {
+                        throw new DataIntegrityViolationException("email already registered");
+                }
+                String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+
+                UserRole role = data.email().equalsIgnoreCase("paulo.taciano@estudante.ufla.br") ? UserRole.ADMIN
+                                : UserRole.USER;
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(userService.createUser(data, encryptedPassword, role));
         }
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        
-        UserRole role = data.email().equalsIgnoreCase("paulo.taciano@estudante.ufla.br") ? UserRole.ADMIN : UserRole.USER;
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(data, encryptedPassword, role));
-    }
 }
